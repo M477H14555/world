@@ -1,4 +1,5 @@
 import random
+import time
 
 x = input("> ")
 
@@ -6,11 +7,13 @@ scavenge_list = ["Trash can", "Public Toilet", 'Park', 'Library', "Mall", "Vendi
 
 money = '0', '1', '2', '3', '5', '10'
 
-wallet = 100000000
+wallet = 0
 
 fishtype = ['Cod', 'Salmon', 'Tuna', 'Sardines']
 
-invfish = []
+invfish = {"Cod": [], "Salmon": [], "Tuna": [], "Sardines": []}
+
+fishtime = [10, 20, 30, 40, 50, 60]
 
 shop1 = ["Wooden rod", "Normal metal rod", 'Uncommon rod']
 shop2 = ['Rare rod', 'Epic rod', "Legendary rod"]
@@ -24,15 +27,42 @@ legendary_rod = 250
 
 rod_id = 0
 
+def fishtmr(t):
+    while t:
+        mins, secs = divmod(t, 60)
+        if len(str(secs)) < 2:
+            timer = f"{mins:2d}:0{secs}"
+        else:
+            timer = f"{mins:2d}:{secs:2d}"
+        print(timer)
+        time.sleep(1)
+        t -= 1
+
+
 while True:
     if x == "!fish":
         if rod_id == 0:
             print("You don't have a fishing rod, sorry.")
-        if rod_id > 1:
+        if rod_id > 0:
             print("Ah! you have a fishing rod! Ready to fish?")
             answer = input("Y/N > ")
             if answer == "Y" or "y":
                 print("How long do you want to fish for?")
+                print(fishtime)
+                answer = input("> ")
+                answer = int(answer)
+                if answer in fishtime:
+                    if answer == fishtime[0]:
+                        print(f"Ok, you will fish for {answer} minutes.")
+                        fishtmr(answer)
+                        fishtypeselect = random.choice(fishtype)
+                        fishamnt = random.randint(0, 21)
+                        print(f"You have caught {fishamnt} {fishtypeselect}!")
+                        invfish[fishtypeselect].append(fishamnt)
+
+
+                else:
+                    print("Sorry, you can only fish for the times allocated")
 
     if x == "!invfish":
         print(invfish)
@@ -57,6 +87,7 @@ while True:
                         rod_id += 1
                         wallet = wallet - wooden_rod
                         print("You have successfully bought a wooden rod!")
+                        print("You can now go fishing")
                     elif answer == "N" or "n":
                         print("ok, it's  your choice")
 
@@ -91,6 +122,24 @@ while True:
                             print("You have successfully bought a Uncommon rod")
                         elif answer == "N" or "n":
                             print("ok, it's  your choice")
+
+            if x == "Next":
+                print("Here's the shop, type in 'back' to go back and 'next' to go to the next one")
+                print(shop2)
+                inner_shop = input("> ")
+
+                if inner_shop in shop2:
+                    if inner_shop == shop2[0]:
+                        if shop2[0] > wallet:
+                            print("Sorry, you don't have enough money yet")
+                        else:
+                            print(f"Would you like to by the rare rod for {rare_rod}?")
+                            answer = input("> ")
+                            if answer == "Y" or "y":
+                                wallet = wallet - rare_rod
+                                print("You have now obtained the rare rod!")
+                            elif answer == "N" or "n":
+                                print("It's your choice")
 
     if x == "!scavenge":
         print("Where would you like to scavenge?")
