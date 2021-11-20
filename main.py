@@ -7,7 +7,7 @@ scavenge_list = ["Trash can", "Public Toilet", 'Park', 'Library', "Mall", "Vendi
 
 money = '0', '1', '2', '3', '5', '10'
 
-wallet = 0
+wallet = 1000
 
 fishtype = ['Cod', 'Salmon', 'Tuna', 'Sardines']
 
@@ -18,14 +18,17 @@ fishtime = [10, 20, 30, 40, 50, 60]
 shop1 = ["Wooden rod", "Normal metal rod", 'Uncommon rod']
 shop2 = ['Rare rod', 'Epic rod', "Legendary rod"]
 
-wooden_rod = 25
+shop_access = ["1", "2"]
+
+Wooden_rod = 25
 Normal_metal_rod = 75
 Uncommon_rod = 100
-rare_rod = 150
-epic_rod = 200
-legendary_rod = 250
+Rare_rod = 150
+Epic_rod = 200
+Legendary_rod = 250
 
-rod_id = 0
+rod_id = 1
+
 
 def fishtmr(t):
     while t:
@@ -49,18 +52,22 @@ while True:
             if answer == "Y" or "y":
                 print("How long do you want to fish for?")
                 print(fishtime)
-                answer = input("> ")
-                answer = int(answer)
-                if answer in fishtime:
-                    if answer == fishtime[0]:
-                        print(f"Ok, you will fish for {answer} minutes.")
-                        fishtmr(answer)
-                        fishtypeselect = random.choice(fishtype)
-                        fishamnt = random.randint(0, 21)
-                        print(f"You have caught {fishamnt} {fishtypeselect}!")
-                        invfish[fishtypeselect].append(fishamnt)
+                timefishing = input("> ")
+                timefishing = int(timefishing)
+                if timefishing in fishtime:
+                    print(f"Ok, you will fish for {timefishing} minutes.")
+                    fishlmt = 11 + timefishing
 
+                    if rod_id == 1:
+                        fishlmt *= 1
+                    else:
+                        fishlmt *= rod_id
 
+                    fishtmr(timefishing)
+                    fishtypeselect = random.choice(fishtype)
+                    fishamnt = random.randint(0, fishlmt)
+                    print(f"You have caught {fishamnt} {fishtypeselect}!")
+                    invfish[fishtypeselect].append(fishamnt)
                 else:
                     print("Sorry, you can only fish for the times allocated")
 
@@ -71,75 +78,77 @@ while True:
         print(wallet)
 
     if x == "!shop":
-        print("Here's the shop! To swap pages, type in next.")
+        print("Here's the shop! To swap pages, type in the page number.")
         print(shop1)
-        x = input("> ")
-        if x == shop1[0] or shop1[1] or shop1[2]:
+        x = input(">> ")
+
+        if x in shop1 or shop_access:
             print("Ok, let's see here...")
+            item_request_price = eval(x.replace(" ", "_"))
+
+        elif x in shop_access:
+            page_swap = eval(x.replace(x, f"shop{x}"))
+            print(page_swap)
+            x = input(">>> ")
 
             if x == shop1[0]:
-                if wooden_rod > wallet:
-                    print("You don't have enough money, sorry")
+                if item_request_price > wallet:
+                    print("You don't have enough money, sorry.")
                 else:
-                    print(f"Would you like to buy the wooden rod for {wooden_rod}?")
-                    answer = input("Y/N > ")
-                    if answer == "Y" or "y":
-                        rod_id += 1
-                        wallet = wallet - wooden_rod
-                        print("You have successfully bought a wooden rod!")
-                        print("You can now go fishing")
-                    elif answer == "N" or "n":
-                        print("ok, it's  your choice")
+                    if rod_id < 0:
+                        print("You need to buy the following before this one.")
+                    elif rod_id >= 1:
+                        print("You already have this rod.")
+                    else:
+                        print(f"Would you like to buy the {x} for {item_request_price}?")
+                        answer = input("Y/N > ")
+                        if answer == "Y" or "y":
+                            rod_id += 1
+                            wallet = wallet - item_request_price
+                            print(f"You have successfully bought a {x}!")
+                            print("You can go fish now!")
+                        elif answer == "N" or "n":
+                            print("ok, it's  your choice...")
 
             if x == shop1[1]:
-                if Normal_metal_rod > wallet:
-                    print("You don't have enough money, sorry")
+                if item_request_price > wallet:
+                    print("You don't have enough money, sorry.")
                 else:
                     if rod_id < 1:
                         print("You need to buy the following before this one.")
+                    elif rod_id >= 2:
+                        print("You already have this rod.")
                     else:
-                        print(f"Would you like to buy the Normal metal rod for {Normal_metal_rod}?")
+                        print(f"Would you like to buy the {x} for {item_request_price}?")
                         answer = input("Y/N > ")
                         if answer == "Y" or "y":
                             rod_id += 1
-                            wallet = wallet - Normal_metal_rod
-                            print("You have successfully bought a Normal metal rod")
+                            wallet = wallet - item_request_price
+                            print(f"You have successfully bought a {x}!")
                         elif answer == "N" or "n":
-                            print("ok, it's  your choice")
+                            print("ok, it's  your choice...")
 
             if x == shop1[2]:
-                if Uncommon_rod > wallet:
-                    print("You don't have enough money, sorry")
+                if item_request_price > wallet:
+                    print("You don't have enough money, sorry.")
                 else:
                     if rod_id < 2:
                         print("You need to buy the following before this one.")
+                    elif rod_id >= 3:
+                        print("You already have this rod.")
                     else:
-                        print(f"Would you like to buy the Uncommon rod for {Uncommon_rod}?")
+                        print(f"Would you like to buy the {x} for {item_request_price}?")
                         answer = input("Y/N > ")
                         if answer == "Y" or "y":
                             rod_id += 1
-                            wallet = wallet - Uncommon_rod
-                            print("You have successfully bought a Uncommon rod")
+                            wallet = wallet - item_request_price
+                            print(f"You have successfully bought a {x}!")
                         elif answer == "N" or "n":
-                            print("ok, it's  your choice")
+                            print("ok, it's  your choice...")
 
-            if x == "Next":
-                print("Here's the shop, type in 'back' to go back and 'next' to go to the next one")
-                print(shop2)
-                inner_shop = input("> ")
+########################################################################################################################
 
-                if inner_shop in shop2:
-                    if inner_shop == shop2[0]:
-                        if shop2[0] > wallet:
-                            print("Sorry, you don't have enough money yet")
-                        else:
-                            print(f"Would you like to by the rare rod for {rare_rod}?")
-                            answer = input("> ")
-                            if answer == "Y" or "y":
-                                wallet = wallet - rare_rod
-                                print("You have now obtained the rare rod!")
-                            elif answer == "N" or "n":
-                                print("It's your choice")
+############################################################################################################
 
     if x == "!scavenge":
         print("Where would you like to scavenge?")
@@ -147,7 +156,7 @@ while True:
         print(scavenge_list_end)
         x = input("> ")
 
-        if x == scavenge_list_end[0] or scavenge_list_end[1] or scavenge_list_end[2]:
+        if x in scavenge_list_end:
             print("Ok, let's see here...")
             money_end = random.choice(money)
 
